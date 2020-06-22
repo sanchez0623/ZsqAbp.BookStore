@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Volo.Abp;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 
 namespace ZsqAbp.BookStore.EntityFrameworkCore
 {
@@ -8,6 +9,13 @@ namespace ZsqAbp.BookStore.EntityFrameworkCore
         public static void ConfigureBookStore(this ModelBuilder builder)
         {
             Check.NotNull(builder, nameof(builder));
+
+            builder.Entity<Book>(b =>
+            {
+                b.ToTable(BookStoreConsts.DbTablePrefix + "Books", BookStoreConsts.DbSchema);
+                b.ConfigureByConvention(); //auto configure for the base class props
+                b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            });
 
             /* Configure your own tables/entities inside here */
 
